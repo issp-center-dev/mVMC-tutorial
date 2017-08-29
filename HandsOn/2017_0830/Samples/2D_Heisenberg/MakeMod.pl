@@ -13,7 +13,7 @@
   printf FILE "lattice       = \"Tetragonal\"\n";
   printf FILE "J             = 1.0\n";
   printf FILE "2Sz           = 0\n";
-  printf FILE "NVMCSample    = 50\n";
+  printf FILE "NVMCSample    = 100\n";
   printf FILE "NSROptItrStep = 500\n";
   printf FILE "NSROptItrSmp  = 100\n";
   printf FILE "NMPTrans      = 1\n";
