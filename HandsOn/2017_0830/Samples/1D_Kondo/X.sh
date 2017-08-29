@@ -38,7 +38,8 @@ echo -n "[s]pl_aft"
 date
 perl -w Aft_energy.pl 
 perl -w Aft_Sq.pl 
-perl -w Aft_SiSj.pl 
+#perl -w Aft_SiSj.pl 
+perl -w Aft_SiSj_kondo.pl
 echo -n "[e]pl_aft"
 date
 #[e]aft

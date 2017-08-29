@@ -230,24 +230,11 @@
     for($ky=0;$ky<$L_y;$ky+=1){
       $tmp=$All_Sq[$kx][$ky]/($all_i*1.0);
       $tmp_err=sqrt($All_Sq_err[$kx][$ky]/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$tmp**2)/(sqrt(1.0*$all_i));
-      printf FILE "$kx $ky $tmp $tmp_err \n";
+      printf FILE "$kx  $tmp $tmp_err \n";
     }
     #printf FILE "\n";
   }
  close(FILE);
-
-  $fname="Result_Nq.dat";
-  open(FILE,">$fname");
-  for($kx=0;$kx<=$L_x;$kx+=1){
-    for($ky=0;$ky<$L_y;$ky+=1){
-      $tmp=$All_Nq[$kx][$ky]/($all_i*1.0);
-      $tmp_err=sqrt(abs($All_Nq_err[$kx][$ky]/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$tmp**2));
-      #printf FILE "$kx $ky $tmp $tmp_err \n";
-    }
-    printf FILE "\n";
-  }
- close(FILE);
-
 
 
   for($orb_i=0;$orb_i<$orb_num;$orb_i++){
@@ -257,7 +244,7 @@
       for($ky=0;$ky<$L_y;$ky+=1){
         $tmp=$All_Sq_dec[$kx][$ky][$orb_i]/($all_i*1.0);
         $tmp_err=sqrt($All_Sq_dec_err[$kx][$ky][$orb_i]/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$tmp**2);
-        printf FILE "$kx $ky $tmp $tmp_err \n";
+        printf FILE "$kx $tmp $tmp_err \n";
       }
       #printf FILE "\n";
     }
@@ -272,7 +259,7 @@
       for($ky=0;$ky<$L_y;$ky+=1){
         $tmp=$All_Nq_dec[$kx][$ky][$orb_i]/($all_i*1.0);
         $tmp_err=sqrt(abs($All_Nq_dec_err[$kx][$ky][$orb_i]/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$tmp**2));
-        printf FILE "$kx $ky $tmp $tmp_err \n";
+        printf FILE "$kx $tmp $tmp_err \n";
       }
       #printf FILE "\n";
     }

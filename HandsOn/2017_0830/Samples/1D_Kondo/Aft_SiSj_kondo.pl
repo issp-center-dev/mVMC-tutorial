@@ -3,7 +3,7 @@
   #input!!
   &input;
   #input!!
-  $PI=3.14159265358979;
+  #$PI=3.14159265358979;
   $Sample=5;
   $orb_num=$tmp_orb;
   $Lx=$tmp_Lx;
@@ -141,17 +141,17 @@
       $Sxy_A  = $Sxy_A/(1.0*$Sample);
       $Sxy_E  = sqrt($Sxy_D/(1.0*($Sample-1.0))-$Sample/($Sample-1.0)*$Sxy_A**2)/(sqrt(1.0*$Sample));
       $Sz_A   = $Sz_A/(1.0*$Sample);
-      $Sz_E   = sqrt($Sz_D/(1.0*($Sample-1.0))-$Sample/($Sample-1.0)*$Sz_A**2)/(sqrt(1.0*$Sample));
+      #$Sz_E   = sqrt($Sz_D/(1.0*($Sample-1.0))-$Sample/($Sample-1.0)*$Sz_A**2)/(sqrt(1.0*$Sample));
 
       #printf("$all_i $all_j $S_A $S_E $Sxy_A $Sxy_E $Sz_A $Sz_D\n");
       printf FILE ("$all_i $all_j $S_A $S_E $Sxy_A $Sxy_E $Sz_A $Sz_D\n");
 
-      $S[$all_i][$all_j]       = $S_A;
-      $S_err[$all_i][$all_j]   = $S_E;
-      $Sxy[$all_i][$all_j]     = $Sxy_A;
-      $Sxy_err[$all_i][$all_j] = $Sxy_E;
-      $Sz[$all_i][$all_j]      = $Sz_A;
-      $Sz_err[$all_i][$all_j]  = $Sz_E;
+      #$S[$all_i][$all_j]       = $S_A;
+      #$S_err[$all_i][$all_j]   = $S_E;
+      #$Sxy[$all_i][$all_j]     = $Sxy_A;
+      #$Sxy_err[$all_i][$all_j] = $Sxy_E;
+      #$Sz[$all_i][$all_j]      = $Sz_A;
+      #$Sz_err[$all_i][$all_j]  = $Sz_E;
     }
   }
   close(FILE);
