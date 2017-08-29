@@ -1,3 +1,5 @@
+perl -w MakeMod.pl
+./vmcdry.out StdFace.def
 #[s]UHF
 mkdir tmpUHF
 cp IniGreen.pl ./tmpUHF
@@ -12,3 +14,4 @@ cd -
 #[e]UHF
 cp tmpUHF/zqp_APOrbital_opt.dat . 
 echo "         InOrbital  zqp_APOrbital_opt.dat" >> namelist.def 
+cp namelist.def xnamelist.def

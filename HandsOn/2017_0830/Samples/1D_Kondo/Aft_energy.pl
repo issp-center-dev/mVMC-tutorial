@@ -5,6 +5,7 @@
   #$PI=3.14159265358979;
   $all_i=5;
   printf("CHECK L_x=$Lx L_y=$Ly orb=$orb_num \n");
+  $Ns = $Lx*$Ly;
 
   $H=0.0;
   $H_err=0.0;
@@ -36,11 +37,11 @@
     close(INPUTFILE);
   }
   $H=$H/($all_i*1.0);
-  $H_err=sqrt($H_err/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$H**2)/(sqrt(1.0*$all_i));
+  $H_err=sqrt(abs($H_err/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$H**2))/(sqrt(1.0*$all_i));
   $H_2=$H_2/($all_i*1.0);
-  $H_2_err=sqrt($H_2_err/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$H_2**2)//(sqrt(1.0*$all_i));
+  $H_2_err=sqrt(abs($H_2_err/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$H_2**2))/(sqrt(1.0*$all_i));
   $Delta=$Delta/($all_i*1.0);
-  $Delta_err=sqrt($Delta_err/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$Delta**2)//(sqrt(1.0*$all_i));
+  $Delta_err=sqrt($Delta_err/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$Delta**2)/(sqrt(1.0*$all_i));
 
   $fname="Tmp_energy.dat";
   open(FILE,">$fname");
@@ -53,11 +54,16 @@
   $fname="Result_energy.dat";
   open(FILE,">$fname");
   printf FILE ("Energy Err  \n");
-  printf FILE ("%.10lf    %.10lf  \n",$H,$H_err);
+  printf FILE ("%.16lf    %.16lf  \n",$H,$H_err);
+  printf FILE ("\n");
+  printf FILE ("Energy/Ns Err/Ns  \n");
+  printf FILE ("%.16lf    %.16lf  \n",$H/$Ns,$H_err/$Ns);
+  printf FILE ("\n");
   printf FILE ("H2 Err  \n");
-  printf FILE ("%.10lf    %.10lf  \n",$H_2,$H_2_err);
+  printf FILE ("%.16lf    %.16lf  \n",$H_2,$H_2_err);
+  printf FILE ("\n");
   printf FILE ("Variance Err  \n");
-  printf FILE ("%.10lf    %.10lf  \n",$Delta,$Delta_err);
+  printf FILE ("%.16lf    %.16lf  \n",$Delta,$Delta_err);
   close(FILE); 
 
 
