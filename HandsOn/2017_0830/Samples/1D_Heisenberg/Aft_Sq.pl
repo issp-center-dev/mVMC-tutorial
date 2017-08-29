@@ -17,7 +17,7 @@
 
   $norm = $Ns/$sublattice;
 
-  printf("CHECK Energy L_x=$L_x L_y=$L_y orb=$orb_num norm=$norm\n");
+  printf("CHECK Energy L_x=$L_x L_y=$L_y orb=$orb_num norm=$norm $Nelectron\n");
 
   for($kx=0;$kx<=$L_x;$kx+=1){
     for($ky=0;$ky<$L_y;$ky+=1){
@@ -241,7 +241,7 @@
     for($ky=0;$ky<$L_y;$ky+=1){
       $tmp=$All_Nq[$kx][$ky]/($all_i*1.0);
       $tmp_err=sqrt($All_Nq_err[$kx][$ky]/(1.0*($all_i-1.0))-$all_i/($all_i-1.0)*$tmp**2)/(sqrt(1.0*$all_i));
-      printf FILE "$kx $ky $tmp $tmp_err \n";
+      printf FILE "$kx $tmp $tmp_err \n";
     }
   }
  close(FILE);
@@ -251,9 +251,6 @@
 
  sub input{
   #input START 
-  $Lx_cnt=0;
-  $Ly_cnt=0;
-  $orb_cnt=0;
   $file=sprintf("input.txt");
   open(INPUTFILE,$file);
   while($name=<INPUTFILE>){
@@ -267,16 +264,11 @@
     if($tmp[0] eq 'Lx'){
       #printf "AA $tmp[0] $tmp[1] \n";
       $tmp_Lx = $tmp[1];
-      $Lx_cnt=1;
     } 
     if($tmp[0] eq 'orb_num'){
       #printf "AA $tmp[0] $tmp[1] \n";
       $tmp_orb = $tmp[1];
-      $orb_cnt=1;
     } 
-  }
-  if($Lx_cnt==0 ||$orb_cnt==0){
-    printf "FAITAL ERROR IN input.txt !!!!!!!!!!!!! \n";
   }
   close(INPUTFILE);
   $file=sprintf("modpara.def");
