@@ -1,3 +1,4 @@
-Lx 8
+Lx 4
 Ly 1
 orb_num 1
+NSPStot 0
