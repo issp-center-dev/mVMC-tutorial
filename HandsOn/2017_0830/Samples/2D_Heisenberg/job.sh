@@ -12,6 +12,8 @@ cd ${PBS_O_WORKDIR}
 #module list > a
 #module list
 source /home/issp/materiapps/mVMC/mVMCvars.sh
+perl -w MakeMod.pl
+vmcdry.out ./StdFace.def
 #[s]opt1
 echo -n "[s]opt1"
 date
