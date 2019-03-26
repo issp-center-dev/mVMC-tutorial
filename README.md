@@ -1,2 +1,2 @@
 # mVMC-tutorial
-Tutorial for mVMC
+Tutorials for mVMC
