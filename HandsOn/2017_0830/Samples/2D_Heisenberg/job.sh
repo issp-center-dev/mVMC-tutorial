@@ -1,8 +1,8 @@
 #!/bin/sh
-#QSUB -queue i9acc
-#QSUB -node  8
+#QSUB -queue i18cpu
+#QSUB -node  4
 #QSUB -mpi   24
-#QSUB -omp   8
+#QSUB -omp   4
 #QSUB -place pack
 #QSUB -over false
 #PBS -l walltime=00:30:00
@@ -12,6 +12,8 @@ cd ${PBS_O_WORKDIR}
 #module list > a
 #module list
 source /home/issp/materiapps/mVMC/mVMCvars.sh
+perl -w MakeMod.pl
+vmcdry.out ./StdFace.def
 #[s]opt1
 echo -n "[s]opt1"
 date
@@ -49,7 +51,7 @@ mv output aft
 perl -w Aft_energy.pl
 echo -n "[s]pl_aft"
 date
-perl -w Aft_Sq_Hub.pl 
+perl -w Aft_Sq.pl 
 echo -n "[e]pl_aft"
 date
 #[e]aft

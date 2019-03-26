@@ -1,8 +1,8 @@
 #!/bin/sh
 #QSUB -queue i18cpu
-#QSUB -node  8
+#QSUB -node  4
 #QSUB -mpi   24
-#QSUB -omp   8
+#QSUB -omp   4
 #QSUB -place pack
 #QSUB -over false
 #PBS -l walltime=00:30:00
@@ -15,7 +15,7 @@ source /home/issp/materiapps/mVMC/mVMCvars.sh
 
 perl -w MakeMod.pl
 #[s]opt1
-./vmcdry.out ./StdFace.def
+vmcdry.out ./StdFace.def
 echo -n "[s]opt1"
 date
  mpijob vmc.out namelist.def 
