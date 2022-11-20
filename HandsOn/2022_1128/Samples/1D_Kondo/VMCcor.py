@@ -44,6 +44,50 @@ def main():
     OutputNk(list_org,all_Nk)
     #[e] calc Sq,Sz,Nq,Nk
     OutputReal(list_org,G1,max_cnt)
+    OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt)
+
+def OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt):
+    Lx       = list_org[0]
+    Ly       = list_org[1]
+    Lz       = list_org[2]
+    orb_num  = list_org[3]
+    All_N    = Lx*Ly*Lz*orb_num 
+    tot_S    = np.zeros((max_cnt,All_N,All_N),dtype=np.float64)
+    Sxy      = np.zeros((max_cnt,All_N,All_N),dtype=np.float64)
+    Sz       = np.zeros((max_cnt,All_N,All_N),dtype=np.float64)
+    for num_bin in range(0,max_cnt):
+        for all_i in range(0,All_N):
+            for all_j in range(0,All_N):
+                tmp_Sz   = G2_sz[num_bin][all_i][all_j][0][0]
+                tmp_Sz  += -G2_sz[num_bin][all_i][all_j][1][0]
+                tmp_Sz  += -G2_sz[num_bin][all_i][all_j][0][1]
+                tmp_Sz  += G2_sz[num_bin][all_i][all_j][1][1]
+                tmp_Sz   = 0.25*tmp_Sz
+                tmp_Sxy  = -0.5*G2_ex[num_bin][all_i][all_j][0][1]
+                tmp_Sxy += -0.5*G2_ex[num_bin][all_i][all_j][1][0]
+                if all_i == all_j:
+                    tmp_Sxy += 0.5*G1[num_bin][all_i][all_i][0]
+                    tmp_Sxy += 0.5*G1[num_bin][all_i][all_i][1]
+                tot_S[num_bin][all_i][all_j] = tmp_Sxy+tmp_Sz
+                Sxy[num_bin][all_i][all_j]   = tmp_Sxy
+                Sz[num_bin][all_i][all_j]    = tmp_Sz
+    #
+    ave_tot_S  = np.mean(tot_S,axis=0)
+    err_tot_S  = np.std(tot_S,axis=0,ddof=1)
+    ave_Sxy    = np.mean(Sxy,axis=0)
+    err_Sxy    = np.std(Sxy,axis=0,ddof=1)
+    ave_Sz     = np.mean(Sz,axis=0)
+    err_Sz     = np.std(Sz,axis=0,ddof=1)
+    with open("Sij.dat", 'w') as f:
+        print(" %s " % ("# i  j tot_S err_tot_S Sxy err_Sxy Sz err_Sz "), file=f)
+        for all_i in range(All_N):
+            for all_j in range(All_N):
+                print("%d %d %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f " % (all_i,all_j,\
+                ave_tot_S[all_i][all_j],err_tot_S[all_i][all_j],\
+                ave_Sxy[all_i][all_j],err_Sxy[all_i][all_j],\
+                ave_Sz[all_i][all_j],err_Sz[all_i][all_j]), file=f)
+
+
 
 def OutputReal(list_org,G1,max_cnt):
     Lx        = list_org[0]
