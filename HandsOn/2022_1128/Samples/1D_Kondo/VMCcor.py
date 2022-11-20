@@ -220,11 +220,11 @@ def CalcSq_tot(list_org,G1,G2_sz,G2_ex,dir_name,max_cnt):
                         Ncond+=  G1[num_bin][all_i][all_i][0]
                         Ncond+=  G1[num_bin][all_i][all_i][1]
                         for all_j in range(0,All_N):
-                            list_site       = qlms_lattice.get_site(all_i,list_org)
+                            list_site       = qlms_lattice.get_site_Kondo(all_i,list_org)
                             i_x             = list_site[0]
                             i_y             = list_site[1]
                             #
-                            list_site       = qlms_lattice.get_site(all_j,list_org)
+                            list_site       = qlms_lattice.get_site_Kondo(all_j,list_org)
                             j_x             = list_site[0]
                             j_y             = list_site[1]
             

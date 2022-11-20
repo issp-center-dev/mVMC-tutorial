@@ -1,0 +1,12 @@
+[lattice]
+Lx      = 8
+Ly      = 1 # Ly is not used
+Lz      = 1 # Lz is not used
+orb_num = 2 # orb_num is not used
+[mVMC]
+sub_x   = 2
+sub_y   = 1 # sub_y is not used
+sub_z   = 1 # sub_z is not used
+[mVMC_aft]
+modpara   = "modpara.def"
+directory = "aft"
