@@ -59,8 +59,8 @@ def main():
         print("%s         " % ("# Ene err_Ene Ene/(All_site) err_Ene/(All_site)"),file=f)
         print("%f %f %f %f" % (Ave_Ene,Err_Ene,Ave_Ene/(All_site),Err_Ene/(All_site)),file=f)
     with open("occ.dat", 'w') as f:
+        print("%s         " % ("# occ err_occ AF err_AF"),file=f)
         for orb_i in range(orb_num):
-            print("%s         " % ("# occ err_occ AF err_AF"),file=f)
             print("%f %f %f %f" % (Ave_occ[orb_i],Err_occ[orb_i],Ave_AF[orb_i],Err_AF[orb_i]),end="",file=f)
         print(" " ,file=f)
 

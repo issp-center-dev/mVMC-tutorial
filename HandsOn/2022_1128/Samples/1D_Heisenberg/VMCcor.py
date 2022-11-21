@@ -40,9 +40,52 @@ def main():
 
     #[s] calc Sq,Sz,Nq,Nk
     all_Sq,all_Sz,all_Nq,all_Nk = CalcSq_tot(list_org,G1,G2_sz,G2_ex,dir_name,max_cnt)
-    OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq) 
+    OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq)
+    #OutputNk(list_org,all_Nk) #Nk in Heiseneberg is not output
     #[e] calc Sq,Sz,Nq,Nk
     OutputReal(list_org,G1,max_cnt)
+    OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt)
+
+def OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt):
+    Lx       = list_org[0]
+    Ly       = list_org[1]
+    Lz       = list_org[2]
+    orb_num  = list_org[3]
+    All_N    = Lx*Ly*Lz*orb_num 
+    tot_S    = np.zeros((max_cnt,All_N,All_N),dtype=np.float64)
+    Sxy      = np.zeros((max_cnt,All_N,All_N),dtype=np.float64)
+    Sz       = np.zeros((max_cnt,All_N,All_N),dtype=np.float64)
+    for num_bin in range(0,max_cnt):
+        for all_i in range(0,All_N):
+            for all_j in range(0,All_N):
+                tmp_Sz   = G2_sz[num_bin][all_i][all_j][0][0]
+                tmp_Sz  += -G2_sz[num_bin][all_i][all_j][1][0]
+                tmp_Sz  += -G2_sz[num_bin][all_i][all_j][0][1]
+                tmp_Sz  += G2_sz[num_bin][all_i][all_j][1][1]
+                tmp_Sz   = 0.25*tmp_Sz
+                tmp_Sxy  = -0.5*G2_ex[num_bin][all_i][all_j][0][1]
+                tmp_Sxy += -0.5*G2_ex[num_bin][all_i][all_j][1][0]
+                if all_i == all_j:
+                    tmp_Sxy += 0.5*G1[num_bin][all_i][all_i][0]
+                    tmp_Sxy += 0.5*G1[num_bin][all_i][all_i][1]
+                tot_S[num_bin][all_i][all_j] = tmp_Sxy+tmp_Sz
+                Sxy[num_bin][all_i][all_j]   = tmp_Sxy
+                Sz[num_bin][all_i][all_j]    = tmp_Sz
+    #
+    ave_tot_S  = np.mean(tot_S,axis=0)
+    err_tot_S  = np.std(tot_S,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
+    ave_Sxy    = np.mean(Sxy,axis=0)
+    err_Sxy    = np.std(Sxy,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
+    ave_Sz     = np.mean(Sz,axis=0)
+    err_Sz     = np.std(Sz,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
+    with open("Sij.dat", 'w') as f:
+        print(" %s " % ("# i  j tot_S err_tot_S Sxy err_Sxy Sz err_Sz "), file=f)
+        for all_i in range(All_N):
+            for all_j in range(All_N):
+                print("%d %d %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f " % (all_i,all_j,\
+                ave_tot_S[all_i][all_j],err_tot_S[all_i][all_j],\
+                ave_Sxy[all_i][all_j],err_Sxy[all_i][all_j],\
+                ave_Sz[all_i][all_j],err_Sz[all_i][all_j]), file=f)
 
 def OutputReal(list_org,G1,max_cnt):
     Lx        = list_org[0]
@@ -58,10 +101,11 @@ def OutputReal(list_org,G1,max_cnt):
             spin[num_bin][all_i]   = G1[num_bin][all_i][all_i][0]-G1[num_bin][all_i][all_i][1]
     #
     ave_charge  = np.mean(charge,axis=0)
-    err_charge  = np.std(charge,axis=0,ddof=1)
+    err_charge  = np.std(charge,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
     ave_spin    = np.mean(spin,axis=0)
-    err_spin    = np.std(spin,axis=0,ddof=1)
+    err_spin    = np.std(spin,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
     with open("Real.dat", 'w') as f:
+        print(" %s " % ("# x  y charge err_charge spin err_spin"), file=f)
         for i_x in range(0,list_org[0]):
             #for i_y in range(0,list_org[1]):
             all_i =  i_x #+i_y*list_org[0]
@@ -71,16 +115,18 @@ def OutputReal(list_org,G1,max_cnt):
 
 
 def OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq):
+    max_cnt = all_Sq.shape[0]
     #[s] Sq,Sz,Nq
     ave_Sq  = np.mean(all_Sq,axis=0)
-    err_Sq  = np.std(all_Sq,axis=0,ddof=1)
+    err_Sq  = np.std(all_Sq,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
     ave_Sz  = np.mean(all_Sz,axis=0)
-    err_Sz  = np.std(all_Sz,axis=0,ddof=1)
+    err_Sz  = np.std(all_Sz,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
     ave_Nq  = np.mean(all_Nq,axis=0)
-    err_Nq  = np.std(all_Nq,axis=0,ddof=1)
+    err_Nq  = np.std(all_Nq,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
     max_Sq  = 0.0
     max_Nq  = 0.0
     with open("SqNq.dat", 'w') as f:
+        print(" %s " % ("# kx ky Sq err_Sq Sz err_Sz Nq err_Nq"), file=f)
         for kx in range(0,list_org[0]+1):
             ky = 0
             #for ky in range(0,list_org[1]+1):
@@ -102,6 +148,30 @@ def OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq):
     with open("MaxNq.dat", 'w') as f:
         print("%12.8f %12.8f  %d %d " % (max_Nq,max_Nq_err,max_Nq_kx,max_Nq_ky), file=f)
     #[e] Sq,Nq
+
+def OutputNk(list_org,all_Nk):
+    max_cnt = all_Nk.shape[0]
+    #[s] Nk
+    ave_Nk  = np.mean(all_Nk,axis=0)
+    err_Nk  = np.std(all_Nk,axis=0,ddof=1)/math.sqrt(1.0*max_cnt)
+    with open("Nk.dat", 'w') as f:
+        print(" %s " % ("# kx ky Nk err_Nk "), file=f)
+        for kx in range(-int(list_org[0]/2),int(list_org[0]/2)+1):
+            if kx <0:
+                tmp_kx = kx+list_org[0]
+            else:
+                tmp_kx = kx
+            ky     = 0
+            tmp_ky = 0
+            #for ky in range(-list_org[1],list_org[1]+1):
+            #    if ky <0:
+            #        tmp_ky = ky+list_org[1]
+            #    else:
+            #        tmp_ky = ky
+            # kx
+            print("%d %d %12.8f %12.8f " % (kx,ky,ave_Nk[tmp_kx][tmp_ky],err_Nk[tmp_kx][tmp_ky]), file=f)
+            #print(" " , file=f)
+    #[e] Nk
 
 
 
