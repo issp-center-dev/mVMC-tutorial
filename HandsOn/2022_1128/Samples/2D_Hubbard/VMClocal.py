@@ -5,35 +5,21 @@ import sys
 import numpy as np
 import toml
 
+import MakeInput
 import qlms_lattice
 
 
 def main():
-    input_file  = sys.argv[1]
     #[s] tolm load
-    input_dict  = toml.load(input_file)
-    #[e] tolm load
-    # ignoring orbital degrees of freedom
-    Lx            = int(input_dict["lattice"]["Lx"])
-    Ly            = int(input_dict["lattice"]["Ly"])
-    Lz            = int(input_dict["lattice"]["Lz"])
-    orb_num       = int(input_dict["lattice"]["orb_num"])
-    modpara       = (input_dict["mVMC_aft"]["modpara"])
-    dir_name      = (input_dict["mVMC_aft"]["directory"])
-    print('Lx = ',Lx)
-    print('Ly = ',Ly)
-    print('Lz = ',Lz)
-    print('orb_num = ',orb_num)
-    print('dir_name  = ',dir_name)
-    print(modpara)
+    input_file                   = sys.argv[1] 
+    list_org,list_sub,input_dict = MakeInput.read_toml(input_file)
 
-    ini_cnt,max_cnt,calcmode = ReadModpara(modpara)
-    All_N    = Lx*Ly*Lz*orb_num
-    All_site = Lx*Ly*Lz
+    ini_cnt,max_cnt,calcmode = ReadModpara(input_dict)
+    All_N    = list_org[0]*list_org[1]*list_org[2]*list_org[3]
+    All_site = list_org[0]*list_org[1]*list_org[2]
+    orb_num  = list_org[3]
+    dir_name = input_dict["mVMC_aft"]["directory"]
 
-    #[s] initialize
-    list_org = [Lx,Ly,Lz,orb_num]
-    #[e] initialize
     tot_Ene    = np.zeros([max_cnt], dtype=np.float64)
     tot_occ    = np.zeros([max_cnt,orb_num], dtype=np.float64)
     tot_AF     = np.zeros([max_cnt,orb_num], dtype=np.float64)
@@ -64,7 +50,8 @@ def main():
             print("%f %f %f %f" % (Ave_occ[orb_i],Err_occ[orb_i],Ave_AF[orb_i],Err_AF[orb_i]),end="",file=f)
         print(" " ,file=f)
 
-def ReadModpara(file_name):
+def ReadModpara(input_dict):
+    file_name = input_dict["mVMC_aft"]["modpara"]
     with open(file_name) as f:
         data      = f.read()
         data      = data.split("\n")

@@ -1,7 +1,7 @@
 L             = 4       
 Lsub          = 2       
-model         = "spin" 
 lattice       = "chain"
+model         = "Spin"   
 J             = 1.0      
 2Sz           = 0        
 NVMCSample    = 200      

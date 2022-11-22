@@ -1,13 +1,13 @@
 #[s] definitions of executions
 MPI=" "
-VMC="./vmc.out"
-VMCDRY="./vmcdry.out"
+VMC="vmc" #MAL
+VMCDRY="vmcdry" #MAL
 #[e] definitions of executions
 
 python3 MakeInput.py input.toml
 #[s] opt
   ${VMCDRY} ./stan_opt.in
-  ${MPI} ${VMC} namelist.def 
+  ${MPI} ${VMC} ./namelist.def 
   cp ./output/zqp_opt.dat . 
   mv output opt
 #[e] opt
@@ -16,7 +16,7 @@ python3 MakeInput.py input.toml
   ${VMCDRY} ./stan_aft.in
   cp green1 greenone.def 
   cp green2 greentwo.def
-  ${MPI} ${VMC} namelist.def ./zqp_opt.dat
+  ${MPI} ${VMC} ./namelist.def ./zqp_opt.dat
   mv output aft
 #[e] aft
 

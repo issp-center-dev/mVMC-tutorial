@@ -5,34 +5,20 @@ import sys
 import numpy as np
 import toml
 
+import MakeInput
 import qlms_lattice
 import VMClocal
 
-
 def main():
-    input_file  = sys.argv[1] 
     #[s] tolm load
-    input_dict  = toml.load(input_file)
+    input_file                   = sys.argv[1] 
+    list_org,list_sub,input_dict = MakeInput.read_toml(input_file)
+    dir_name                     = input_dict["mVMC_aft"]["directory"]
+    model_type                   = input_dict["lattice"]["model_type"]
+    dim_type                     = MakeInput.CalcDim(list_org)
     #[e] tolm load
-    # ignoring orbital degrees of freedom
-    Lx            = int(input_dict["lattice"]["Lx"])
-    Ly            = int(input_dict["lattice"]["Ly"])
-    Lz            = int(input_dict["lattice"]["Lz"])
-    orb_num       = int(input_dict["lattice"]["orb_num"])
-    modpara       = (input_dict["mVMC_aft"]["modpara"])
-    dir_name      = (input_dict["mVMC_aft"]["directory"])
-    print('Lx = ',Lx)
-    print('Ly = ',Ly)
-    print('Lz = ',Lz)
-    print('orb_num = ',orb_num)
-    print(modpara)
 
-    ini_cnt,max_cnt,calcmode = VMClocal.ReadModpara(modpara)
-    All_N = Lx*Ly*Lz*orb_num
-
-    #[s] initialize
-    list_org   = [Lx,Ly,Lz,orb_num]
-    #[e] initialize
+    ini_cnt,max_cnt,calcmode = VMClocal.ReadModpara(input_dict)
 
     #[s] read Green
     G1,G2_sz,G2_ex = ReadGreen(list_org,max_cnt,dir_name)
@@ -40,10 +26,11 @@ def main():
 
     #[s] calc Sq,Sz,Nq,Nk
     all_Sq,all_Sz,all_Nq,all_Nk = CalcSq_tot(list_org,G1,G2_sz,G2_ex,dir_name,max_cnt)
-    OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq)
-    #OutputNk(list_org,all_Nk) #Nk in Heiseneberg is not output
+    OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq,dim_type)
+    if model_type == "Hubbard":
+        OutputNk(list_org,all_Nk,dim_type) #Nk is output only Hubbard
     #[e] calc Sq,Sz,Nq,Nk
-    OutputReal(list_org,G1,max_cnt)
+    OutputReal(list_org,G1,max_cnt,dim_type)
     OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt)
 
 def OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt):
@@ -86,8 +73,9 @@ def OutputSij(list_org,G1,G2_sz,G2_ex,max_cnt):
                 ave_tot_S[all_i][all_j],err_tot_S[all_i][all_j],\
                 ave_Sxy[all_i][all_j],err_Sxy[all_i][all_j],\
                 ave_Sz[all_i][all_j],err_Sz[all_i][all_j]), file=f)
+            print("  ",  file=f)
 
-def OutputReal(list_org,G1,max_cnt):
+def OutputReal(list_org,G1,max_cnt,dim_type):
     Lx        = list_org[0]
     Ly        = list_org[1]
     Lz        = list_org[2]
@@ -107,14 +95,18 @@ def OutputReal(list_org,G1,max_cnt):
     with open("Real.dat", 'w') as f:
         print(" %s " % ("# x  y charge err_charge spin err_spin"), file=f)
         for i_x in range(0,list_org[0]):
-            #for i_y in range(0,list_org[1]):
-            all_i =  i_x #+i_y*list_org[0]
-            i_y   =  0
-            print("%d %d %12.8f %12.8f %12.8f %12.8f" % (i_x,i_y,ave_charge[all_i],err_charge[all_i],ave_spin[all_i],err_spin[all_i]), file=f)
-        #print(" " , file=f)
+            if dim_type == 1:
+                i_y   = 0
+                all_i =  i_x + i_y*list_org[0]
+                print("%d %d %12.8f %12.8f %12.8f %12.8f" % (i_x,i_y,ave_charge[all_i],err_charge[all_i],ave_spin[all_i],err_spin[all_i]), file=f)
+            elif dim_type == 2:
+                for i_y in range(0,list_org[1]):
+                    all_i =  i_x + i_y*list_org[0]
+                    print("%d %d %12.8f %12.8f %12.8f %12.8f" % (i_x,i_y,ave_charge[all_i],err_charge[all_i],ave_spin[all_i],err_spin[all_i]), file=f)
+                print(" " , file=f)
 
 
-def OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq):
+def OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq,dim_type):
     max_cnt = all_Sq.shape[0]
     #[s] Sq,Sz,Nq
     ave_Sq  = np.mean(all_Sq,axis=0)
@@ -128,28 +120,44 @@ def OutputSqSzNq(list_org,all_Sq,all_Sz,all_Nq):
     with open("SqNq.dat", 'w') as f:
         print(" %s " % ("# kx ky Sq err_Sq Sz err_Sz Nq err_Nq"), file=f)
         for kx in range(0,list_org[0]+1):
-            ky = 0
-            #for ky in range(0,list_org[1]+1):
-            if ave_Sq[kx][ky] > max_Sq:
-                max_Sq     = ave_Sq[kx][ky] 
-                max_Sq_err = err_Sq[kx][ky] 
-                max_Sq_kx  = kx 
-                max_Sq_ky  = ky
-                #
-            if ave_Nq[kx][ky] > max_Nq:
-                max_Nq     = ave_Nq[kx][ky] 
-                max_Nq_err = err_Nq[kx][ky] 
-                max_Nq_kx  = kx 
-                max_Nq_ky  = ky
-            print("%d %d %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f" % (kx,ky,ave_Sq[kx][ky],err_Sq[kx][ky],ave_Sz[kx][ky],err_Sz[kx][ky],ave_Nq[kx][ky],err_Nq[kx][ky]), file=f)
-        #print(" " , file=f)
+            if dim_type==1:
+                ky = 0
+                if ave_Sq[kx][ky] > max_Sq:
+                    max_Sq     = ave_Sq[kx][ky] 
+                    max_Sq_err = err_Sq[kx][ky] 
+                    max_Sq_kx  = kx 
+                    max_Sq_ky  = ky
+                    #
+                if ave_Nq[kx][ky] > max_Nq:
+                    max_Nq     = ave_Nq[kx][ky] 
+                    max_Nq_err = err_Nq[kx][ky] 
+                    max_Nq_kx  = kx 
+                    max_Nq_ky  = ky
+                print("%d %d %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f" % (kx,ky,ave_Sq[kx][ky],err_Sq[kx][ky],ave_Sz[kx][ky],err_Sz[kx][ky],ave_Nq[kx][ky],err_Nq[kx][ky]), file=f)
+            elif dim_type==2:
+                for ky in range(0,list_org[1]+1):
+                    if ave_Sq[kx][ky] > max_Sq:
+                        max_Sq     = ave_Sq[kx][ky] 
+                        max_Sq_err = err_Sq[kx][ky] 
+                        max_Sq_kx  = kx 
+                        max_Sq_ky  = ky
+                        #
+                    if ave_Nq[kx][ky] > max_Nq:
+                        max_Nq     = ave_Nq[kx][ky] 
+                        max_Nq_err = err_Nq[kx][ky] 
+                        max_Nq_kx  = kx 
+                        max_Nq_ky  = ky
+                    print("%d %d %12.8f %12.8f %12.8f %12.8f %12.8f %12.8f" % (kx,ky,ave_Sq[kx][ky],err_Sq[kx][ky],ave_Sz[kx][ky],err_Sz[kx][ky],ave_Nq[kx][ky],err_Nq[kx][ky]), file=f)
+                print(" " , file=f)
+            elif dim_type==3:
+                print("not implemented yet")
     with open("MaxSq.dat", 'w') as f:
         print("%12.8f %12.8f  %d %d " % (max_Sq,max_Sq_err,max_Sq_kx,max_Sq_ky), file=f)
     with open("MaxNq.dat", 'w') as f:
         print("%12.8f %12.8f  %d %d " % (max_Nq,max_Nq_err,max_Nq_kx,max_Nq_ky), file=f)
     #[e] Sq,Nq
 
-def OutputNk(list_org,all_Nk):
+def OutputNk(list_org,all_Nk,dim_type):
     max_cnt = all_Nk.shape[0]
     #[s] Nk
     ave_Nk  = np.mean(all_Nk,axis=0)
@@ -161,19 +169,21 @@ def OutputNk(list_org,all_Nk):
                 tmp_kx = kx+list_org[0]
             else:
                 tmp_kx = kx
-            ky     = 0
-            tmp_ky = 0
-            #for ky in range(-list_org[1],list_org[1]+1):
-            #    if ky <0:
-            #        tmp_ky = ky+list_org[1]
-            #    else:
-            #        tmp_ky = ky
-            # kx
-            print("%d %d %12.8f %12.8f " % (kx,ky,ave_Nk[tmp_kx][tmp_ky],err_Nk[tmp_kx][tmp_ky]), file=f)
-            #print(" " , file=f)
-    #[e] Nk
-
-
+            if dim_type==1:
+                ky     = 0
+                tmp_ky = 0
+                print("%d %d %12.8f %12.8f " % (kx,ky,ave_Nk[tmp_kx][tmp_ky],err_Nk[tmp_kx][tmp_ky]), file=f)
+            elif dim_type==2:
+                for ky in range(-list_org[1],list_org[1]+1):
+                    if ky <0:
+                        tmp_ky = ky+list_org[1]
+                    else:
+                        tmp_ky = ky
+                    print("%d %d %12.8f %12.8f " % (kx,ky,ave_Nk[tmp_kx][tmp_ky],err_Nk[tmp_kx][tmp_ky]), file=f)
+                print(" " , file=f)
+            elif dim_type==3:
+                print("Not implemented yet")
+        #[e] Nk
 
 def ReadGreen(list_org,max_cnt,dir_name):
     Lx        = list_org[0]

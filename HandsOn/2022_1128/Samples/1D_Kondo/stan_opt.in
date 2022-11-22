@@ -1,11 +1,11 @@
 L             = 8       
 Lsub          = 2       
-model         = "kondo" 
 lattice       = "chain"
+model         = "Kondo"   
 t             = 1.0      
 J             = 1.0      
-2Sz           = 0        
 ncond         = 8       
+2Sz           = 0        
 NVMCSample    = 200      
 NSROptItrStep = 600      
 NMPTrans      = 1        

@@ -2,7 +2,7 @@ rm *.def
 rm *.dat
 rm *.gp
 rm mVMC.*
-rm -r UHF
+rm -r tmpUHF
 rm -r opt*
 rm -r aft
 rm -r output

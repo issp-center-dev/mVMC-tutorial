@@ -1,8 +1,12 @@
+W             = 4       
+Wsub          = 2       
 L             = 4       
 Lsub          = 2       
-model         = "spin" 
-lattice       = "chain"
-J             = 1.0      
+lattice       = "square"
+model         = "Hubbard"   
+t             = 1.0      
+U             = 4.0      
+ncond         = 16       
 2Sz           = 0        
 NVMCSample    = 200      
 NSROptItrStep = 600      

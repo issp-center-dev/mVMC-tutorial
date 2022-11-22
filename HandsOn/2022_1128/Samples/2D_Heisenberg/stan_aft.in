@@ -1,12 +1,15 @@
 W             = 4       
-L             = 4       
 Wsub          = 2       
+L             = 4       
 Lsub          = 2       
-model         = "spin" 
 lattice       = "square"
+model         = "Spin"   
 J             = 1.0      
 2Sz           = 0        
 NVMCSample    = 200      
 NSROptItrStep = 600      
 NMPTrans      = 1        
 NSPStot       = 0        
+NVMCCalMode   = 1        
+NDataIdxStart = 0        
+NDataQtySmp   = 5        

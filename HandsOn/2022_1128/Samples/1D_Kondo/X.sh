@@ -6,16 +6,16 @@ VMCDRY="./vmcdry.out"
 
 python3 MakeInput.py input.toml
 #[s] opt
-  ${VMCDRY} ./StdFace.def
+  ${VMCDRY} ./stan_opt.in
   ${MPI} ${VMC} namelist.def 
   cp ./output/zqp_opt.dat . 
   mv output opt
 #[e] opt
 
 #[s] aft
-  ${VMCDRY} ./StdFace_aft.def
-  cp green1.def greenone.def 
-  cp green2.def greentwo.def
+  ${VMCDRY} ./stan_aft.in
+  cp green1 greenone.def 
+  cp green2 greentwo.def
   ${MPI} ${VMC} namelist.def ./zqp_opt.dat
   mv output aft
 #[e] aft

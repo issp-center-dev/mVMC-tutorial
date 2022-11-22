@@ -1,15 +1,15 @@
 #[s] definitions of executions
 MPI=" "
-VMC="./vmc.out"
-VMCDRY="./vmcdry.out"
-UHF="./UHF"
+VMC="vmc.out"
+VMCDRY="vmcdry.out"
+UHF="UHF"
 #[e] definitions of executions
 
 python3 MakeInput.py input.toml
-./vmcdry.out StdFace.def
+./vmcdry.out stan_opt.in
 #[s]UHF
 mkdir tmpUHF
-cp MakeIni.py ./tmpUHF
+cp *.py        ./tmpUHF
 cp *def        ./tmpUHF
 cp input.toml  ./tmpUHF
 cp ./UHF       ./tmpUHF
