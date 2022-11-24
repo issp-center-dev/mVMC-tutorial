@@ -1,6 +1,6 @@
 #[s] definitions of executions
 MPI=" "
-VMC="vmc" #MAL
+VMC="vmc"       #MAL
 VMCDRY="vmcdry" #MAL
 #[e] definitions of executions
 

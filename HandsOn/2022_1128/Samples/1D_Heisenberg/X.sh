@@ -1,7 +1,7 @@
 #[s] definitions of executions
 MPI=" "
-VMC="./vmc.out"
-VMCDRY="./vmcdry.out"
+VMC="vmc"       #MAL
+VMCDRY="vmcdry" #MAL
 #[e] definitions of executions
 
 python3 MakeInput.py input.toml
