@@ -1,0 +1,30 @@
+  [abinitio]
+  kx        = 7   
+  ky        = 7   
+  kz        = 3  
+  [lattice]
+  Lx        = 4
+  Ly        = 6
+  Lz        = 1 
+  orb_num   = 2
+  [param]
+  lambda    = 1.0
+  ddf       = 0.2
+  mod_chemi = 0
+  AF_mag    = 0.1
+  AF_Qx     = 1.0
+  AF_Qy     = 1.0
+  PH        = "yes"
+  [file]
+  in_file_trans = "dir-model/zvo_hr.dat"  
+  in_file_int   = "dir-model/zvo_ur.dat"
+  in_file_geom  = "dir-model/zvo_geom.dat"
+  [method]
+  method = "mVMC"
+  [mVMC]
+  sub_x = 2
+  sub_y = 2
+  sub_z = 1
+  [UHF]
+  UHF_co  = 0.1
+  UHF_mag = 0.1

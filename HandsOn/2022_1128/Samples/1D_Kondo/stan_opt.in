@@ -1,0 +1,12 @@
+L             = 8       
+Lsub          = 2       
+lattice       = "chain"
+model         = "Kondo"   
+t             = 1.0      
+J             = 1.0      
+ncond         = 8       
+2Sz           = 0        
+NVMCSample    = 200      
+NSROptItrStep = 600      
+NMPTrans      = 1        
+NSPStot       = 0        

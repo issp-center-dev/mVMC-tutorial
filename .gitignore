@@ -1,2 +1,4 @@
 *.out
 *.dat
+UHF
+__pycache__
